@@ -1,0 +1,1 @@
+{"model": "AE_sound", "checkpoint_name": "checkpoints/ae_sound/checkpoint_AE_sound_5_iter_3_epoch_90", "val_json": "logs/ae_sound/AE_sound_5_3.json", "auc_scores": [0.37778615268655114, 0.5063709127454147, 0.42071354222748647]}

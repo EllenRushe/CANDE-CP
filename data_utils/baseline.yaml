@@ -1,0 +1,16 @@
+base_directory : mimii_baseline/dataset
+pickle_directory: mimii_baseline/pickle_online
+validation_percentage: 10
+audio:
+  bit : 16
+  sr: 16000
+  sec : 10.
+  channels : 8
+
+feature:
+  n_mels: 64
+  frames : 5
+  n_fft: 1024
+  hop_length: 512
+  power: 2.0
+
