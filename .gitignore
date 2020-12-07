@@ -2,3 +2,4 @@
 **__pycache__
 checkpoints
 *.log
+**.DS_Store
