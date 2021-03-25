@@ -11,6 +11,6 @@ for i in $(seq "$NUM_ITERS")
 do 
  	python train.py AE_sound_FiLM_embed_64 "" $i
 	val_json="logs/ae_sound_film_embed_64/AE_sound_FiLM_embed_64__$i.json"
-	python  eval_embed.py  $val_json $i --window_size 50 --context_ckpt_name "checkpoint_MLP_sound_64_epoch_$best_ckpt_64"
+	python  eval_embed.py  $val_json $i --window_size 50  --decay_factor 0.1 --context_ckpt_name "checkpoint_MLP_sound_64_epoch_$best_ckpt_64"
 done
 
