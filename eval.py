@@ -12,7 +12,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
-from sklearn.metrics import roc_curve, auc
+from sklearn.metrics import precision_recall_curve, roc_curve, auc
 from tqdm import tqdm
 
 import models 
@@ -95,13 +95,17 @@ def main():
             # Get the mean AUC for all examples in a particular file. 
             dir_mses.append(np.mean(file_mses))       
         fpr, tpr, thresholds = roc_curve(dir_labels, dir_mses)
-        test_auc_score =  auc(fpr, tpr) 
-        results["{}_{}_{}".format(machine_name, machine_id, dB)] = {"AUC": float(test_auc_score)}
+        test_roc_auc_score =  auc(fpr, tpr)
+
+        precision, recall, _ = precision_recall_curve(dir_labels, dir_mses)
+        test_pr_auc_score = auc(recall, precision)
+
+        results["{}_{}_{}".format(machine_name, machine_id, dB)] = {"ROC-AUC": float(test_roc_auc_score), "PR-AUC": float(test_pr_auc_score)}
         results_file_name = "results_{}.json".format(iter_checkpoint.split('/')[-1])
         with open(os.path.join(results_dir, results_file_name), "w") as f:
             json.dump(results, f)                
                         
-        results_log.append(float(test_auc_score))
+        results_log.append(float(test_roc_auc_score))
     logs = {"model": model_params["model"], 
             "checkpoint_name": iter_checkpoint, 
             "val_json": args.val_json,
