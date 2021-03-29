@@ -7,7 +7,7 @@ default: &DEFAULT
 AE_sound:
   <<: *DEFAULT
   model_name: ae_sound
-  data_dir: "/home/people/12329741/scratch/machine_sound/mimii_baseline/numpy_dataset_context_predict"
+  data_dir: "mimii_baseline/numpy_dataset_context_predict"
   dataset_class: "MachineSoundDataset"  
   checkpoint_dir: "checkpoints/ae_sound"
   context_embedding_file:
@@ -22,7 +22,7 @@ AE_sound:
 AE_sound_all:
   <<: *DEFAULT
   model_name: ae_sound
-  data_dir: "/home/people/12329741/scratch/machine_sound/mimii_baseline/numpy_dataset_context_predict"
+  data_dir: "mimii_baseline/numpy_dataset_context_predict"
   dataset_class: "MachineSoundDataset"
   checkpoint_dir: "checkpoints/ae_sound_all"
   context_embedding_file:
@@ -38,7 +38,7 @@ AE_sound_FiLM_one_hot:
   model_name: ae_sound_film_one_hot
   context_model_name: mlp_sound_64  
   dataset_class: "MachineSoundDataset"  
-  data_dir: "/home/people/12329741/scratch/machine_sound/mimii_baseline/numpy_dataset_context_predict"  
+  data_dir: "mimii_baseline/numpy_dataset_context_predict"  
   checkpoint_dir: "checkpoints/ae_sound_film_one_hot"
   context_checkpoint_dir: "checkpoints/mlp_sound_64"
   context_embedding_file: 
@@ -54,48 +54,12 @@ AE_sound_FiLM_embed_64:
   model_name: ae_sound_film_embed
   context_model_name: mlp_sound_64  
   dataset_class: "MachineSoundDataset"  
-  data_dir: "/home/people/12329741/scratch/machine_sound/mimii_baseline/numpy_dataset_context_predict"  
+  data_dir: "mimii_baseline/numpy_dataset_context_predict"  
   checkpoint_dir: "checkpoints/ae_sound_film_embed_64"
   context_checkpoint_dir: "checkpoints/mlp_sound_64"  
   context_embedding_file: "embeddings/checkpoint_MLP_sound_64_epoch_12.npy" 
   context_filename: "contexts.npy"
   log_dir: 'logs/ae_sound_film_embed_64'  
-  gpu_vis_dev: '0'
-  num_epochs: 100
-  batch_size: 256
-  lr: 0.0001
-
-AE_sound_FiLM_embed_nn_cosine_64:
-  <<: *DEFAULT
-  model_name: ae_sound_film_embed
-  context_model_name: mlp_sound_64
-  context_layer_name: "fc6"
-  dataset_class: "MachineSoundDataset"
-  data_dir: "/home/people/12329741/scratch/machine_sound/mimii_baseline/numpy_dataset_context_predict"
-  checkpoint_dir: "checkpoints/ae_sound_film_embed_nn_cosine_64"
-  context_checkpoint_dir: "checkpoints/mlp_sound_64"
-  context_embedding_file: "embeddings/checkpoint_MLP_sound_64_epoch_12.npy"
-  context_filename: "contexts.npy"
-  log_dir: 'logs/ae_sound_film_embed_nn_cosine_64'
-  distance: "cosine"
-  gpu_vis_dev: '0'
-  num_epochs: 100
-  batch_size: 256
-  lr: 0.0001
-
-AE_sound_FiLM_embed_nn_euclidean_64:
-  <<: *DEFAULT
-  model_name: ae_sound_film_embed
-  context_model_name: mlp_sound_64
-  context_layer_name: "fc6"
-  dataset_class: "MachineSoundDataset"
-  data_dir: "/home/people/12329741/scratch/machine_sound/mimii_baseline/numpy_dataset_context_predict"
-  checkpoint_dir: "checkpoints/ae_sound_film_embed_nn_euclidean_64"
-  context_checkpoint_dir: "checkpoints/mlp_sound_64"
-  context_embedding_file: "embeddings/checkpoint_MLP_sound_64_epoch_12.npy"
-  context_filename: "contexts.npy"
-  log_dir: 'logs/ae_sound_film_embed_nn_euclidean_64'
-  distance: "euclidean"
   gpu_vis_dev: '0'
   num_epochs: 100
   batch_size: 256
