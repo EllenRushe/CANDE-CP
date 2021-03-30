@@ -1,6 +1,5 @@
 # Deep Contextual Novelty Detection with Context Prediction.
-Implementation of *"Deep Contextual Novelty Detection with Context Prediction"* submitted to NeurIPS 2020.  
-
+Implementation of *"Deep Contextual Novelty Detection with Context Prediction"*.
 ## Requirements installation
 **pip**
 ```sh
