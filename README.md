@@ -1,3 +1,5 @@
+**Issues and pull requests are temporarily disabled/can't be granted for a number of weeks as the maintainer is away.**
+
 # Deep Contextual Novelty Detection with Context Prediction.
 Implementation of *"Deep Contextual Novelty Detection with Context Prediction"*.
 ## Requirements installation
