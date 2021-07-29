@@ -3,3 +3,4 @@
 checkpoints
 *.log
 **.DS_Store
+run_scripts/run*.sh
