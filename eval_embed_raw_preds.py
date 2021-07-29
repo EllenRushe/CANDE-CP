@@ -26,10 +26,6 @@ def main():
     parser.add_argument(
             "iter", type=int, default=1, help="Evaluation iteration.")
     parser.add_argument(
-            "--decay_factor", type=float, help="Decay factor.")
-    parser.add_argument(
-            "--window_size", type=int, default=1, help="Window size for evaluation.")
-    parser.add_argument(
             "--context_ckpt_name", type=str, help="checkpoint name for contextual model.")
     args = parser.parse_args()
 
@@ -70,17 +66,15 @@ def main():
     
     results = {}
     results_log = []
-    window_size = args.window_size
 
     context_model = context_model_module.net()
     context_model = nn.DataParallel(context_model).to(device)
     checkpoint_name = os.path.join(params.context_checkpoint_dir, args.context_ckpt_name)
-    model = model_module.net()
+
+    embeddings = torch.from_numpy(np.load(params.context_embedding_file)).float()
+    model = model_module.net(embeddings=embeddings)    
     model = nn.DataParallel(model).to(device)
     test = model_module.test
-    window_preds = []
-   
- 
     for test_dir in test_dirs:
         machine_data = test_dir.split('/')[-3:] 
         dB, machine_name, machine_id = machine_data
@@ -93,10 +87,9 @@ def main():
         dir_mses = []
 
         # Initial embedding size. 
-        # For every window, we should empty the accumulated activations.        
         print("Testing on files in {}".format(test_dir), "Number of files: {}".format(len(glob.glob(test_dir+"/*.npy"))))
         test_files = np.array(glob.glob(test_dir+"/*.npy"))
-        perms = np.random.RandomState(seed=1).permutation(len(test_files))        
+        perms = np.random.RandomState(seed=1).permutation(len(test_files))
         shuffled_test_files = test_files[perms]
         for idx, (test_file) in enumerate(shuffled_test_files):
             file_data = test_file.split('/')[-1].split('.')[0].split('_')
@@ -124,27 +117,8 @@ def main():
                 checkpoint=checkpoint_name
                 )
 
-
-            if len(window_preds) == window_size:
-                # Make room for new example if window is full
-                window_preds.pop(0)
-                assert len(window_preds) == (window_size - 1)
-            decay_factor = args.decay_factor
-            window_preds.append(prediction)
-            # Use len(window_preds) because at the start we will have less than the window size 
-            weights_per_t = [(1 - decay_factor)**(len(window_preds)-t) for t in range(1, len(window_preds)+1)]
-            context_scores = np.zeros(16)
-            for context in range(len(context_scores)):
-                context_scores[context] = sum(weights_per_t*(1*(np.array(window_preds)==context)))
-            context_class = np.argmax(context_scores)
-
-            context = np.zeros(16)
-            context[context_class] = 1
-            context = context.astype(np.float32)
-            context = torch.from_numpy(context)
-            print(context_class, context)
-            file_mse = test(model, context, device, test_loader, checkpoint=iter_checkpoint)
-            dir_mses.append(file_mse)     
+            file_mse = test(model, torch.Tensor([prediction]).long(), device, test_loader, checkpoint=iter_checkpoint)
+            dir_mses.append(file_mse)
         fpr, tpr, thresholds = roc_curve(dir_labels, dir_mses)
         test_roc_auc_score =  auc(fpr, tpr)
 
@@ -152,7 +126,7 @@ def main():
         test_pr_auc_score = auc(recall, precision)
         
         results["{}_{}_{}".format(machine_name, machine_id, dB)] = {"ROC-AUC": float(test_roc_auc_score), "PR-AUC": float(test_pr_auc_score)}
-        results_file_name = "results_{}.json".format(iter_checkpoint.split('/')[-1])
+        results_file_name = "no_window_results_{}.json".format(iter_checkpoint.split('/')[-1])
         with open(os.path.join(results_dir, results_file_name), "w") as f:
             json.dump(results, f)                
                         

@@ -79,8 +79,7 @@ def main():
     model = nn.DataParallel(model).to(device)
     test = model_module.test
     window_preds = []
-   
- 
+    if not os.path.exists("context_preds"): os.mkdir("context_preds")
     for test_dir in test_dirs:
         machine_data = test_dir.split('/')[-3:] 
         dB, machine_name, machine_id = machine_data
@@ -98,6 +97,8 @@ def main():
         test_files = np.array(glob.glob(test_dir+"/*.npy"))
         perms = np.random.RandomState(seed=1).permutation(len(test_files))        
         shuffled_test_files = test_files[perms]
+        raw_context_predictions = []
+        context_predictions_exp = []
         for idx, (test_file) in enumerate(shuffled_test_files):
             file_data = test_file.split('/')[-1].split('.')[0].split('_')
             ID, machine_id, label = file_data[1], int(file_data[2]), int(file_data[3])
@@ -124,7 +125,7 @@ def main():
                 checkpoint=checkpoint_name
                 )
 
-
+            raw_context_predictions.append(prediction)
             if len(window_preds) == window_size:
                 # Make room for new example if window is full
                 window_preds.pop(0)
@@ -137,7 +138,7 @@ def main():
             for context in range(len(context_scores)):
                 context_scores[context] = sum(weights_per_t*(1*(np.array(window_preds)==context)))
             context_class = np.argmax(context_scores)
-
+            context_predictions_exp.append(context_class)
             context = np.zeros(16)
             context[context_class] = 1
             context = context.astype(np.float32)
@@ -157,13 +158,18 @@ def main():
             json.dump(results, f)                
                         
         results_log.append(float(test_roc_auc_score))
-       
+        np.save(os.path.join("context_preds",'raw_context_preds_{}_{}_{}_{}.npy'.format(machine_name, machine_id, dB, args.iter)), np.array(raw_context_predictions))
+        np.save(os.path.join("context_preds",'context_preds_expo_{}_{}_{}_{}.npy'.format(machine_name, machine_id, dB, args.iter)), np.array( context_predictions_exp))  
     logs = {"model": model_params["model"], 
             "checkpoint_name": iter_checkpoint, 
             "val_json": args.val_json,
             "auc_scores": results_log,
         }
 
+    #ground_truth = np.concatenate(ground_truth)
+    #np.save(ground_truth, "ground_truth_{}.npy".format(args.iter))
+    #np.save(np.array(oracle_preds), 'oracle_preds_{}.npy'.format(args.iter))
+    #np.save(np.array( context_predictions_exp), 'context_preds_expo_{}.npy'.format(args.iter))
     with open(
             os.path.join(
                     log_dir, 

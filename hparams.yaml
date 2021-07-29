@@ -38,7 +38,7 @@ AE_sound_FiLM_one_hot:
   model_name: ae_sound_film_one_hot
   context_model_name: mlp_sound_64  
   dataset_class: "MachineSoundDataset"  
-  data_dir: "mimii_baseline/numpy_dataset_context_predict"  
+  data_dir: "/home/people/12329741/scratch/machine_sound/mimii_baseline/numpy_dataset_context_predict"  
   checkpoint_dir: "checkpoints/ae_sound_film_one_hot"
   context_checkpoint_dir: "checkpoints/mlp_sound_64"
   context_embedding_file: 
@@ -54,7 +54,7 @@ AE_sound_FiLM_embed_64:
   model_name: ae_sound_film_embed
   context_model_name: mlp_sound_64  
   dataset_class: "MachineSoundDataset"  
-  data_dir: "mimii_baseline/numpy_dataset_context_predict"  
+  data_dir: "/home/people/12329741/scratch/machine_sound/mimii_baseline/numpy_dataset_context_predict"  
   checkpoint_dir: "checkpoints/ae_sound_film_embed_64"
   context_checkpoint_dir: "checkpoints/mlp_sound_64"  
   context_embedding_file: "embeddings/checkpoint_MLP_sound_64_epoch_12.npy" 
