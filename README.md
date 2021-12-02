@@ -102,3 +102,5 @@ $ python generate_embedding.py --model_name MLP_sound_64 --ckpt_name "checkpoint
 Results on separated by SNR with the mean plus-minus std. 
 
 ![](images/all_results.png)
+
+*Note for the data train/val/test configuration:*  This is achieved by adding 50% of the normal files for each machine ID from the dataset to the test data, leaving the other half for training. This means that overall 50% of data was used for testing while the remaining 50% was used for the training. A portion of normal examples from the test set was used for validation. Please not that these normal validation examples were also used in the evaluations for all models. This portion’s size was equal to 10% of the number of files in the training data (which are all normal files).
